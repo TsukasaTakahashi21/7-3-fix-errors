@@ -8,12 +8,20 @@ $pdo = new PDO(
   $dbPassword
 );
 
-//pagesテーブル取得
-$stmt =" SELECT
-    *
-FROM pages";
 
-$statement = $pdo->prepare($stmt);
+// 検索キーワードの取得
+$searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
+$searchParam = '%'. $searchKeyword . '%';
+
+if (!empty($searchKeyword)) {
+  $statement = "SELECT * FROM pages WHERE title LIKE :search OR content LIKE :search";
+  $statement = $pdo->prepare($statement);
+  $statement->bindValue(':search', $searchParam, PDO::PARAM_STR);
+} else {
+  $stmt =" SELECT * FROM pages";
+  $statement = $pdo->prepare($stmt);
+}
+
 $statement->execute();
 $pages = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -27,10 +35,13 @@ $pages = $statement->fetchAll(PDO::FETCH_ASSOC);
         <title>メモ一覧</title>
     </head>
     
-    <form action="http://localhost:8080/index.php" method="get">
+    <!--  -->
+    <form action="index.php" method="get">
     <input type="search" name="search" style="width:250px;" placeholder="検索キーワードを入力してください" >
     <input type="submit" name="submit" value="検索" >
     </form>
+
+
     
     <font size="5">メモ一覧</font><br />
 
