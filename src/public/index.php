@@ -46,10 +46,14 @@ $pages = $statement->fetchAll(PDO::FETCH_ASSOC);
         <input type="submit" name="降順" value="古い順">
      </form>
 
-      <?php if("新しい順" === $_POST['昇順']){ ?>
-      <?php array_multisort(array_column($pages,'created_at'),SORT_ASC, $pages);}?>
-      <?php if("古い順" === $_POST['降順']){ ?>
-      <?php array_multisort(array_column($pages,'created_at'),SORT_DESC, $pages);}?>
+     <?php
+     if (isset($_POST['昇順']) && $_POST['昇順'] === '新しい順') {
+      array_multisort(array_column($pages,'created_at'),SORT_ASC, $pages);
+     } elseif (isset($_POST['降順']) && $_POST['降順'] === '古い順') {
+      array_multisort(array_column($pages,'created_at'),SORT_DESC, $pages);
+     }
+     ?>
+
     </div>   
 
       <table border="1" width="800" bgcolor= #EEEEEE>
